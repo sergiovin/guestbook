@@ -1,0 +1,4 @@
+App.index:
+  path: /
+  defaults: { _controller: WebBundle:App:index, _format: html}
+

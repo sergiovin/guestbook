@@ -1,0 +1,50 @@
+# you can read more about security in the related section of the documentation
+# http://symfony.com/doc/current/book/security.html
+security:
+    # http://symfony.com/doc/current/book/security.html#encoding-the-user-s-password
+    encoders:
+        InfrastructureBundle\Security\User: plaintext
+
+    # http://symfony.com/doc/current/book/security.html#where-do-users-come-from-user-providers
+    providers:
+        user_provider:
+            id: infrastructure.user_provider
+
+    # the main part of the security, where you can set up firewalls
+    # for specific sections of your app
+    firewalls:
+
+        # disables authentication for assets and the profiler, adapt it according to your needs
+        dev:
+            pattern: ^/(_(profiler|wdt)|css|images|js)/
+            security: false
+
+
+        # secures part of the application
+
+        web_area:
+            #access_denied_handler: kernel.listener.access_denied.handler
+            anonymous: ~
+            pattern: /.*
+            provider: user_provider
+            form_login:
+                check_path: User.login_check
+                login_path: User.login
+                failure_path: User.login_failure
+                always_use_default_target_path: true
+                default_target_path: User.success
+                target_path_parameter: User.success
+                success_handler: infrastructure.security.username_password_authenticator
+                failure_handler: infrastructure.security.username_password_authenticator
+                failure_forward: false
+                use_forward: true
+                require_previous_session: false
+            logout:
+                path:   User.logout
+#                target: User.login
+
+    # with these settings you can restrict or allow access for different parts
+    # of your application based on roles, ip, host or methods
+    # http://symfony.com/doc/current/cookbook/security/access_control.html
+    access_control:
+        - { path: /.*, roles: IS_AUTHENTICATED_ANONYMOUSLY}

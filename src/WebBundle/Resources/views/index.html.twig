@@ -1,0 +1,250 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html>
+<head>
+    <title>Simple guestbook APP</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <script src="http://ajax.googleapis.com/ajax/libs/jquery/1/jquery.min.js"></script>
+	<script>
+	
+	function loadPosts(page) {
+		var rpp = 5;
+		$.ajax({ 
+		  url: "guestbook/list.json",
+		  dataType: "json",
+		  data: {
+			"order": '[{"property":"modified","direction":"DESC"}]',
+			"offset": page*rpp, 
+			"limit": rpp
+		  },
+		  success : function( data ) {
+					  
+					  var items = [];
+					  $.each( data.result.data, function( key, val ) { 
+						items.push( "<div class=\"item\"><b>Name: </b>" + val['name'] + " ("+val['modified']+")<br><b>Email: </b>" + val['email'] + "<br><b>Text</b>:" + val['text'] + "<hr></div>" );
+					  });
+					 
+					  
+					  var total = data.result.total;	
+					  pagesCount = parseInt(total/rpp);
+					  pager= "";
+					  for(i = 0;i<pagesCount; i++) {
+					    pager = pager + "[<a href=\"JavaScript:loadPosts("+i+")\">"+(i+1)+"</a>]|"
+					  }
+					  $( "#posts").html(items.join( "" )+"<br>"+pager+"<br>");
+					}
+		});
+	}
+	
+	$( function() {
+		
+		$("#registerUserFormDiv").hide(); 
+		$("#loginUserFormDiv").hide(); 
+		loadPosts(0);
+		
+		
+		//add new post to guest book 
+		$('#submitPostButton').click( function() {
+			$.ajax({
+				url: 'guestbook/insert',
+				type: 'post',
+				dataType: 'json',
+				data: $('form#postForm').serialize(),
+				success: function(data){
+					$('#postFormErrors').html('');
+					$('#postFormConfirm').html(data.result);
+					$('#postForm')[0].reset();
+					loadPosts(0);
+				},
+				error: function(XMLHttpRequest, textStatus, errorThrown) {
+					var errors = XMLHttpRequest.responseJSON;
+					$('#postFormConfirm').html('');
+					var errMsg = errors.result.msg;
+					if (errors.result.errors) {
+					  $.each( errors.result.errors, function( key, val ) { 
+						errMsg +="<br>"+val;
+					  });
+					}
+					$('#postFormErrors').html(errMsg);
+					
+				}
+ 
+		
+			});
+		});	
+		
+		
+		//register new user 
+		$('#submitRegisterUserButton').click( function() {
+			$.ajax({
+				url: 'user/insert',
+				type: 'post',
+				dataType: 'json',
+				data: $('form#registerUserForm').serialize(),
+				success: function(data){
+					$('#registerUserFormErrors').html('');
+					$('#registerUserFormConfirm').html(data.result);
+					//try to login user
+					$.ajax({
+							url: 'user/login_check',
+							type: 'post',
+							dataType: 'json',
+							data: $('form#registerUserForm').serialize(),
+							success: function(data){
+								//reload page
+								window.location.reload();
+							},
+							error: function(XMLHttpRequest, textStatus, errorThrown) {
+							}
+						});
+				},
+				error: function(XMLHttpRequest, textStatus, errorThrown) {
+					var errors = XMLHttpRequest.responseJSON;
+					var errMsg ='';
+					$('#registerUserFormConfirm').html('');
+					if (typeof errors.result==='string') 
+					{
+						errMsg = errors.result;
+					}
+					else 
+					{
+						errMsg = errors.result.msg;
+						if (errors.result.errors) {
+						  $.each( errors.result.errors, function( key, val ) { 
+							errMsg +="<br>"+val;
+						  });
+						}
+					}
+					$('#registerUserFormErrors').html(errMsg);
+					
+
+				}
+ 
+		
+			});
+		});	
+		
+		//login existing user
+		$('#submitLoginUserButton').click( function() {
+			$.ajax({
+				url: 'user/login_check',
+				type: 'post',
+				dataType: 'json',
+				data: $('form#loginUserForm').serialize(),
+				success: function(data){
+					//reload page
+					window.location.reload();
+				},
+				error: function(XMLHttpRequest, textStatus, errorThrown) {
+					var errors = XMLHttpRequest.responseJSON;
+					$('#loginUserFormConfirm').html('');
+					var errMsg = errors.result;
+	
+					$('#loginUserFormErrors').html(errMsg);
+					
+
+				}
+ 
+		
+			});
+		});	
+	});
+	
+	function showRegisterUserForm() 
+	{
+		$("#registerUserFormDiv").show();
+	}
+	function showLoginUserForm() 
+	{
+		$("#loginUserFormDiv").show();
+	}
+	
+	
+	function logOut() 
+	{
+		$.ajax({
+			url: 'user/logout',
+			type: 'get',
+			dataType: 'json',
+			success: function(data){
+				console.log(data);
+			},
+			error: function(XMLHttpRequest, textStatus, errorThrown) {
+				console.log(XMLHttpRequest);
+			}
+ 		});
+	}
+	
+	</script>
+</head>
+<body>
+{% if ( app.user and app.user.hasRole('ROLE_USER')) %}
+<div align="right">You are: <b>{{ app.user.name }}</b> <a href="user/logout">Logout</a></div>
+{% else %}
+<div align="right"><a href="JavaScript:showRegisterUserForm()">Register user</a> | <a href="JavaScript:showLoginUserForm()">Login</a></div>
+{% endif %}
+<div id="registerUserFormDiv"  align="right">
+<form id="registerUserForm">
+	<div id="registerUserFormErrors" style="color:red"></div>
+	<div id="registerUserFormConfirm" style="color:green"></div>
+	<table>
+	<tr>
+	<td>User name: </td><td><input type="text" name="_username"></td>
+	</tr>
+	<tr>
+	<td>Password:</td><td> <input type="password" name="_password"></td>
+	</tr>
+	<tr>
+	<td>Email:</td><td> <input type="text" name="email"></td>
+	</tr>
+	<tr>
+	<td colspan=2><input id="submitRegisterUserButton" type="button" value="Register"></td>
+	<tr>
+	</table>
+</form>
+</div>
+
+
+
+<div id="loginUserFormDiv"  align="right">
+<form id="loginUserForm">
+	<div id="loginUserFormErrors" style="color:red"></div>
+	<div id="loginUserFormConfirm" style="color:green"></div>
+	<table>
+	<tr>
+	<td>User name: </td><td><input type="text" name="_username"></td>
+	</tr>
+	<tr>
+	<td>Password:</td><td> <input type="password" name="_password"></td>
+	</tr>
+	<tr>
+	<td colspan=2><input id="submitLoginUserButton" type="button" value="Login"></td>
+	<tr>
+	</table>
+</form>
+</div>
+
+<h1>Simple guestbook APP</h1>
+<p>Posts list:
+<div id="posts">
+
+</div>
+<form id="postForm">
+	<div id="postFormErrors" style="color:red"></div>
+	<div id="postFormConfirm" style="color:green"></div>
+	<table>
+	<tr>
+	<td>Your name: </td><td>{% if ( app.user and app.user.hasRole('ROLE_USER')) %}<b>{{ app.user.name }}</b><input type="hidden" name="name" value="{{ app.user.name }}">{% else %}<input type="text" name="name">{% endif %}</td>
+	</tr>
+	<tr>
+	<td>Your E-mail:</td><td>{% if ( app.user and app.user.hasRole('ROLE_USER')) %}<b>{{ app.user.email }}</b><input type="hidden" name="email" value="{{ app.user.email }}">{% else %} <input type="text" name="email">{% endif %}</td>
+	</tr>
+	<tr>
+	<td>Your post:</td><td> <textarea rows="4" cols="45" name="text"></textarea></td>
+	</tr>
+	<tr>
+	<td colspan=2><input id="submitPostButton" type="button" value="Create post"></td>
+	<tr>
+	</table>
+</form>
+</body>
+</html>

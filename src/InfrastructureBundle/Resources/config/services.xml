@@ -1,0 +1,90 @@
+<?xml version="1.0" ?>
+<container xmlns="http://symfony.com/schema/dic/services"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://symfony.com/schema/dic/services http://symfony.com/schema/dic/services/services-1.0.xsd">
+
+    <parameters>
+        <parameter key="application.command_handler.class">Application\CommandHandler</parameter>
+        <parameter key="application.event_dispatcher.class">Application\Event\EventDispatcher</parameter>
+        <parameter key="infrastructure.event_dispatcher_adapter.class">InfrastructureBundle\Adapter\EventDispatcher</parameter>
+        <parameter key="infrastructure.validator.class">InfrastructureBundle\Adapter\Validator</parameter>
+    </parameters>
+
+    <services>
+
+        <!-- Exposed Services -->
+        <service id="command_handler" class="%application.command_handler.class%">
+            <argument type="service" id="infrastructure.validator"/>
+            <argument type="service" id="application.event_dispatcher"/>
+            <argument type="service" id="infrastructure.user"/>
+        </service>
+
+
+        <!-- GuestBook -->
+        <service id="use_case.car_color_list" public="false" class="Application\UseCase\Guestbook\ListUseCase">
+            <argument type="service" id="infrastructure.repository_manager"/>
+            <tag name="use_case" />
+        </service>
+         
+        <service id="use_case.car_color_insert" public="false" class="Application\UseCase\Guestbook\InsertUseCase">
+            <argument type="service" id="infrastructure.repository_manager"/>
+            <tag name="use_case" />
+        </service>
+      
+
+        <!-- User -->
+        <service id="use_case.user_insert" public="false" class="Application\UseCase\User\InsertUseCase">
+            <argument type="service" id="infrastructure.repository_manager"/>
+            <tag name="use_case" />
+        </service>
+   
+        <!-- Not Exposed Services -->
+        <service id="application.event_dispatcher" public="false" class="%application.event_dispatcher.class%" />
+
+        <!-- Adapters -->
+        <service id="infrastructure.validator" public="false" class="%infrastructure.validator.class%">
+            <argument type="service" id="validator"/>
+        </service>
+        <service id="infrastructure.event_dispatcher_adapter" public="false" class="%infrastructure.event_dispatcher_adapter.class%">
+            <argument type="service" id="event_dispatcher"/>
+            <tag name="event_dispatcher_listener" />
+        </service>
+        <service id="infrastructure.user" public="true" class="InfrastructureBundle\Adapter\User">
+            <argument type="service" id="security.token_storage"/>
+        </service>
+
+        <!-- Concrete Implementations -->
+
+        <service id="infrastructure.repository.car_color" class="InfrastructureBundle\Repository\GuestbookRepository">
+            <argument type="service" id="doctrine.orm.entity_manager"/>
+            <argument type="service" id="infrastructure.user"/>
+            <tag name="infrastructure.entity_repository" />
+        </service>
+
+        <service id="infrastructure.repository.user" class="InfrastructureBundle\Repository\UserRepository">
+            <argument type="service" id="doctrine.orm.entity_manager"/>
+            <argument type="service" id="infrastructure.user"/>
+            <tag name="infrastructure.entity_repository" />
+        </service>
+
+        <!-- Security -->
+
+        <service id="infrastructure.user_provider" class="InfrastructureBundle\Security\UserProvider">
+            <argument type="service" id="infrastructure.repository.user"/>
+        </service>
+        <service id="infrastructure.security.username_password_authenticator" class="InfrastructureBundle\Security\UsernamePasswordAuthenticator">
+             <argument type="service" id="router"/>
+        </service>
+
+
+
+        <service id="infrastructure_entity_listener_resolver" class="InfrastructureBundle\Events\Listeners\EntityListenerResolver">
+            <argument type="service" id="service_container"/>
+        </service>
+
+        <service id="infrastructure.repository_manager" public="true" class="InfrastructureBundle\Repository\RepositoryManager">
+            <argument type="service" id="service_container"/>
+        </service>
+
+     </services>
+</container>

@@ -1,0 +1,12 @@
+App:
+    resource: "@WebBundle/Resources/config/routing/App.yml"
+
+Guestbook:
+    resource: "@WebBundle/Resources/config/routing/Guestbook.yml"
+    prefix: /guestbook
+
+User:
+    resource: "@WebBundle/Resources/config/routing/User.yml"
+    prefix: /user
+
+

@@ -1,0 +1,9 @@
+Guestbook.list:
+  path: /list.{_format}
+  defaults: {_controller: WebBundle:App:process, _commandClass: Guestbook\List, _jmsgroup: list, _format: json}
+  requirements: {_format: json}
+
+Guestbook.insert:
+  path: /insert
+  defaults: {_controller: WebBundle:App:process, _commandClass: Guestbook\Insert, _format: json}
+

@@ -1,0 +1,24 @@
+User.login:
+  path: /login
+  defaults: {_controller: WebBundle:User:login, _format: json}
+
+User.logout:
+  path: /logout
+  defaults: {_controller: WebBundle:User:logout, _format: json}
+
+User.login_failure:
+  path: /login_failed
+  defaults: {_controller: WebBundle:User:loginFailure, _format: json}
+
+User.success:
+  path: /success
+  defaults: {_controller: WebBundle:User:success, _format: json}
+
+User.login_check:
+   path: /login_check
+   defaults: {_controller: WebBundle:User:loginCheck, _format: json}
+
+User.insert:
+  path: /insert
+  defaults: {_controller: WebBundle:App:process, _commandClass: User\Insert, _format: json}
+
