@@ -2,7 +2,6 @@
 
 namespace InfrastructureBundle\Repository;
 
-use Application\Contract\Translator;
 use Application\Contract\User;
 use Application\ValueObject\Criteria;
 use Application\ValueObject\Order;

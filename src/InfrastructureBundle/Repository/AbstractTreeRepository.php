@@ -2,7 +2,6 @@
 
 namespace InfrastructureBundle\Repository;
 
-use Application\Contract\Translator;
 use Application\Contract\User;
 use Application\ValueObject\Criteria;
 use Application\ValueObject\Order;
@@ -16,9 +15,9 @@ abstract class AbstractTreeRepository extends AbstractRepository
     */
     public $repository;
 
-    public function __construct(EntityManager $em, User $user, Cache $cache, Translator $translator)
+    public function __construct(EntityManager $em, User $user, Cache $cache)
     {
-        parent::__construct($em, $user, $cache, $translator);
+        parent::__construct($em, $user, $cache);
 
         $this->repository->setChildrenIndex('children');
     }

@@ -25,7 +25,7 @@
 					 
 					  
 					  var total = data.result.total;	
-					  pagesCount = parseInt(total/rpp);
+					  pagesCount = parseInt(total/rpp)+1;
 					  pager= "";
 					  for(i = 0;i<pagesCount; i++) {
 					    pager = pager + "[<a href=\"JavaScript:loadPosts("+i+")\">"+(i+1)+"</a>]|"

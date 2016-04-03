@@ -21,12 +21,12 @@
 
 
         <!-- GuestBook -->
-        <service id="use_case.car_color_list" public="false" class="Application\UseCase\Guestbook\ListUseCase">
+        <service id="use_case.guestbook_list" public="false" class="Application\UseCase\Guestbook\ListUseCase">
             <argument type="service" id="infrastructure.repository_manager"/>
             <tag name="use_case" />
         </service>
          
-        <service id="use_case.car_color_insert" public="false" class="Application\UseCase\Guestbook\InsertUseCase">
+        <service id="use_case.guestbook_insert" public="false" class="Application\UseCase\Guestbook\InsertUseCase">
             <argument type="service" id="infrastructure.repository_manager"/>
             <tag name="use_case" />
         </service>
@@ -55,7 +55,7 @@
 
         <!-- Concrete Implementations -->
 
-        <service id="infrastructure.repository.car_color" class="InfrastructureBundle\Repository\GuestbookRepository">
+        <service id="infrastructure.repository.guestbook" class="InfrastructureBundle\Repository\GuestbookRepository">
             <argument type="service" id="doctrine.orm.entity_manager"/>
             <argument type="service" id="infrastructure.user"/>
             <tag name="infrastructure.entity_repository" />

@@ -15,10 +15,9 @@ abstract class AbstractListRepository extends AbstractRepository
     public function getPaginatorResult(Criteria $criteria = null, Order $order = null, $limit = null, $offset = null)
     {
         $data = $this->getResult($criteria, $order, $limit, $offset);
-
         return array(
             'data'  => $data,
-            'total' => (is_null($limit) || count($data) < $limit) ? count($data) : $this->getCount($criteria)
+            'total' => (is_null($limit) || (count($data) < $limit && $offset == 0)) ? count($data) : $this->getCount($criteria)
         );
     }
 

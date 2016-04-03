@@ -3,7 +3,6 @@
 namespace InfrastructureBundle\Repository;
 
 use Application\Contract\RepositoryManager as RepositoryManagerInterface;
-use Application\Contract\Translator;
 use Application\ValueObject\Criteria;
 use Application\ValueObject\Order;
 use Domain\Contract\RepositoryInterface;

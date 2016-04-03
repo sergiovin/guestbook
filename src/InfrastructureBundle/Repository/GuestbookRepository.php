@@ -16,7 +16,7 @@ class GuestbookRepository extends AbstractListRepository implements GuestbookRep
     public function persist(Guestbook $guestbook)
     {
         if (!$this->canWrite($guestbook)) {
-            throw new DomainException('Сохранение запрещено');
+            throw new DomainException('Persists denied');
         }
 
         $this->em->persist($guestbook);
@@ -25,7 +25,7 @@ class GuestbookRepository extends AbstractListRepository implements GuestbookRep
     public function remove(Guestbook $guestbook)
     {
         if (!$this->canWrite($guestbook)) {
-            throw new DomainException($this->translator->trans('Удаление запрещено'));
+            throw new DomainException('Remove denied');
         }
 
         $this->em->remove($guestbook);

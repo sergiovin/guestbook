@@ -3,7 +3,6 @@
 namespace Domain\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
-use Domain\Contract\Translatable;
 use Gedmo\Mapping\Annotation as Gedmo;
 use JMS\Serializer\Annotation as JMS;
 

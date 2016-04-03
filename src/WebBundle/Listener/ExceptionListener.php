@@ -21,7 +21,7 @@ class ExceptionListener
     }
 
     public function onKernelException(GetResponseForExceptionEvent $event)
-    {        
+    {       
         $exception = $event->getException();
 
         $response = new Response();

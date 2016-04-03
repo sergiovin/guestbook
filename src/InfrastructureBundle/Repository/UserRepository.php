@@ -16,7 +16,7 @@ class UserRepository extends AbstractListRepository implements UserRepositoryInt
     public function persist(User $user)
     {
         if (!$this->canWrite($user)) {
-            throw new DomainException($this->translator->trans('Сохранение запрещено'));
+            throw new DomainException('Persist denied');
         }
 
         $this->em->persist($user);
@@ -25,7 +25,7 @@ class UserRepository extends AbstractListRepository implements UserRepositoryInt
     public function remove(User $user)
     {
         if (!$this->canWrite($user)) {
-            throw new DomainException($this->translator->trans('Удаление запрещено'));
+            throw new DomainException('Remove denied');
         }
 
         $this->em->remove($user);
@@ -41,9 +41,5 @@ class UserRepository extends AbstractListRepository implements UserRepositoryInt
         return $this->repository->findOneByEmail($email);
     }
 
-    public function findOneByApikey($apikey)
-    {
-
-        return $this->repository->findOneByApikey($apikey);
-    }
+    
 }
