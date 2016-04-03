@@ -15,6 +15,7 @@ class InsertCommand extends AbstractInsertCommand
     protected $name;
 
     /**
+	 * @Assert\NotNull(message="Email field must be filled")
      * @Assert\Email(
      *     message = "The email '{{ value }}' is not a valid email.",
      *     checkMX = false
