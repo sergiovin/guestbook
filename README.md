@@ -1,2 +1,2 @@
 # guestbook
-Simple Symfony guestbook!!!
+Simple Symfony guestbook
