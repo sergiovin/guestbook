@@ -19,7 +19,6 @@
         "sensio/distribution-bundle": "^5.0",
         "sensio/framework-extra-bundle": "^3.0.15",
         "jms/serializer-bundle": "^1.1.0",
-        "jsor/doctrine-postgis": "^1.0.0",
         "oro/doctrine-extensions": "^1.0.11",
         "stof/doctrine-extensions-bundle": "^1.2.2",
         "doctrine/doctrine-migrations-bundle": "^1.0"
